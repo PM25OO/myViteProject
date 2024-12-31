@@ -1,3 +1,9 @@
+第一个前端小练手——简易bookstore  
+###### （痛苦学习中。。  
+- [x] 2024.12.31 简易后端启动
+- [x] 2025.1.1 AntDesign上找组件，拼，改，缝😅
+- [ ] UI设计完成
+- [ ] 前后端互通达成
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
