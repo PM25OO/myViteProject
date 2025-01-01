@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import List from './list.tsx';
 import Cart from './cart.tsx';
+import ButtonDrawer from './drawer.tsx';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -23,12 +24,12 @@ const App: React.FC = () => {
   };
 
   return (
-    <Layout style={{ height: '100vh' }}>
+    <Layout style={{ minHeight: '100vh'}}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
-          mode="inline"
+          mode="vertical"
           defaultSelectedKeys={['1']}
           items={[
             {
@@ -46,7 +47,7 @@ const App: React.FC = () => {
             {
               key: '3',
               icon: <WalletOutlined style={{fontSize: '18px'}}/>,
-              label: 'About',
+              label: 'Wallet',
               onClick: handleMenuClick,
             },
           ]}
@@ -102,8 +103,8 @@ const App: React.FC = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          {showList==='0' && <List />}
-          {showList==='1' && <List />}
+          {showList==='0' && <><List /><ButtonDrawer /></>}
+          {showList==='1' && <><List /><ButtonDrawer /></>}
           {showList==='2' && <Cart />}
         </Content>
       </Layout>
