@@ -10,36 +10,72 @@ const defaultCover = (
 );
 
 const List: React.FC = () => {
-    type Book = {id: number, title: string, author: string, price: number};
+    type Book = { id: number, title: string, author: string, price: number };
     const [books, setBooks] = useState<Book[]>([]);
+    const [cart, setCart] = useState<number[]>([]);
 
     useEffect(() => {
         const fetchBooks = async () => {
-          try {
-            const response = await fetch('http://localhost:5000/books');
-            const data = await response.json();
-            setBooks(data || []); // 确保我们只设置 books 数组
-          } catch (error) {
-            console.error('Error fetching books:', error);
-            setBooks([]);
-          } 
+            try {
+                const response = await fetch('http://localhost:5000/books');
+                const data = await response.json();
+                setBooks(data || []); // 确保我们只设置 books 数组
+            } catch (error) {
+                console.error('Error fetching books:', error);
+                setBooks([]);
+            }
         };
-    
+
         fetchBooks();
-      }, []);
+    }, []);
+
+    const handleAddToCart = (book: Book) => {
+
+        if (cart.includes(book.id)) {
+            // 移除购物车
+            fetch(`http://localhost:5000/cart?id=${book.id}`, {
+                method: 'DELETE'
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to remove book from cart: ${response.status}`);
+                    }
+                    setCart((prevCart) => prevCart.filter((id) => id !== book.id));
+                    alert(`Removed "${book.title}" from cart!`);
+                })
+                .catch((error) => console.error('Error removing book from cart:', error));
+        } else {
+            // 添加到购物车
+            fetch('http://localhost:5000/cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(book),
+            })
+            .then(response => response.json())
+            .then(() => {
+                setCart((prevCart) => [...prevCart, book.id]);
+              })
+            .then(data => console.log('Book added to cart:', data))
+            .catch(error => console.error('Error adding book to cart:', error));
+        }
+    }
 
     return (
         <Row gutter={24} justify="start" style={{ width: '100%', overflow: 'hidden' }}>
             {books.map((book) => (
                 <Col key={book.id} span={6} style={{ padding: '24px' }}>
                     <Card title={book.title} bordered={true} hoverable={true} cover={defaultCover} >
-                        <p><strong>Author: </strong> {book.author}</p>
+                        <p ><strong>Author: </strong> {book.author}</p>
                         <p><strong>Price: </strong> ${book.price}</p>
                         <Button
                             type="primary"
                             shape="round"
                             icon={<ShoppingCartOutlined style={{ fontSize: '18px' }} />}
+                            onClick={() => handleAddToCart(book)}
                             style={{
+                                backgroundColor: cart.includes(book.id) ? 'red' : 'green',
                                 position: 'absolute',
                                 bottom: '16px',
                                 right: '16px',
