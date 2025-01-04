@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Col, Row } from 'antd';
-import { ShoppingCartOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const defaultCover = (
     <img
@@ -26,14 +26,27 @@ const List: React.FC = () => {
             }
         };
 
+        const fetchCart = async () => {
+            try {
+              const response = await fetch('http://localhost:5000/cart');
+              const data = await response.json();
+              const cartIds = data.map((item: { id: number }) => item.id); // 获取购物车中的书籍 ID
+              setCart(cartIds); // 更新购物车状态
+            } catch (error) {
+              console.error('Error fetching cart:', error);
+              setCart([]); // 失败时设置为空
+            }
+          };
+
         fetchBooks();
+        fetchCart();
     }, []);
 
     const handleAddToCart = (book: Book) => {
 
         if (cart.includes(book.id)) {
             // 移除购物车
-            fetch(`http://localhost:5000/cart?id=${book.id}`, {
+            fetch(`http://localhost:5000/cart/${book.id}`, {
                 method: 'DELETE'
             })
                 .then((response) => {
@@ -41,7 +54,6 @@ const List: React.FC = () => {
                         throw new Error(`Failed to remove book from cart: ${response.status}`);
                     }
                     setCart((prevCart) => prevCart.filter((id) => id !== book.id));
-                    alert(`Removed "${book.title}" from cart!`);
                 })
                 .catch((error) => console.error('Error removing book from cart:', error));
         } else {
@@ -53,12 +65,11 @@ const List: React.FC = () => {
                 },
                 body: JSON.stringify(book),
             })
-            .then(response => response.json())
-            .then(() => {
-                setCart((prevCart) => [...prevCart, book.id]);
-              })
-            .then(data => console.log('Book added to cart:', data))
-            .catch(error => console.error('Error adding book to cart:', error));
+                .then(response => response.json())
+                .then(() => {
+                    setCart((prevCart) => [...prevCart, book.id]);
+                })
+                .catch(error => console.error('Error adding book to cart:', error));
         }
     }
 
@@ -72,7 +83,10 @@ const List: React.FC = () => {
                         <Button
                             type="primary"
                             shape="round"
-                            icon={<ShoppingCartOutlined style={{ fontSize: '18px' }} />}
+                            icon={cart.includes(book.id) ?
+                                <DeleteOutlined style={{ fontSize: '18px' }} />
+                                :
+                                <ShoppingCartOutlined style={{ fontSize: '18px' }} />}
                             onClick={() => handleAddToCart(book)}
                             style={{
                                 backgroundColor: cart.includes(book.id) ? 'red' : 'green',
