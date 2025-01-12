@@ -24,7 +24,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh'}}>
+    <Layout style={{ height: '97vh'}}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical" />
         <Menu
@@ -99,8 +99,10 @@ const App: React.FC = () => {
             margin: '24px 16px',
             padding: 24,
             minHeight: 280,
+            height: '500px',
             background: '#E8E8E8',
             borderRadius: borderRadiusLG,
+            overflowY: 'auto',
           }}
         >
           {showList==='0' && <><List /><ButtonDrawer /></>}
