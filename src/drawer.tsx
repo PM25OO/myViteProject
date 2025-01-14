@@ -20,7 +20,7 @@ const ButtonDrawer: React.FC = () => {
                 type="primary"
                 onClick={showDrawer}
                 style={{ width: '80px', height: '80px', borderRadius: '50%' }}
-                icon={<ShoppingCartOutlined style={{ textAlign:'center',fontSize: '18px' }} />}
+                icon={<ShoppingCartOutlined style={{ fontSize: '18px' }} />}
             >
                 Open
             </FloatButton>

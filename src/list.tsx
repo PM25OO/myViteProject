@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Col, Row } from 'antd';
+import { Button, Card, Col, Row, Modal } from 'antd';
 import { ShoppingCartOutlined, DeleteOutlined } from '@ant-design/icons';
+
 
 const defaultCover = (
     <img
@@ -13,6 +14,19 @@ const List: React.FC = () => {
     type Book = { id: number, title: string, author: string, price: number };
     const [books, setBooks] = useState<Book[]>([]);
     const [cart, setCart] = useState<number[]>([]);
+    const [openModalId, setOpenModalId] = useState<number | null>(null);
+
+    const showModal = (bookId: number) => {
+        setOpenModalId(bookId);
+    };
+
+    const handleOk = () => {
+        setOpenModalId(null);
+    };
+
+    const handleCancel = () => {
+        setOpenModalId(null);
+    };
 
     useEffect(() => {
         const fetchBooks = async () => {
@@ -28,15 +42,15 @@ const List: React.FC = () => {
 
         const fetchCart = async () => {
             try {
-              const response = await fetch('http://localhost:5000/cart');
-              const data = await response.json();
-              const cartIds = data.map((item: { id: number }) => item.id); // 获取购物车中的书籍 ID
-              setCart(cartIds); // 更新购物车状态
+                const response = await fetch('http://localhost:5000/cart');
+                const data = await response.json();
+                const cartIds = data.map((item: { id: number }) => item.id); // 获取购物车中的书籍 ID
+                setCart(cartIds); // 更新购物车状态
             } catch (error) {
-              console.error('Error fetching cart:', error);
-              setCart([]); // 失败时设置为空
+                console.error('Error fetching cart:', error);
+                setCart([]); // 失败时设置为空
             }
-          };
+        };
 
         fetchBooks();
         fetchCart();
@@ -77,9 +91,22 @@ const List: React.FC = () => {
         <Row gutter={24} justify="start" style={{ width: '100%', overflow: 'hidden' }}>
             {books.map((book) => (
                 <Col key={book.id} span={6} style={{ padding: '24px' }}>
-                    <Card title={book.title} bordered={true} hoverable={true} cover={defaultCover} >
+                    <Card title={book.title} bordered={true} hoverable={true} cover={defaultCover} onClick={() => showModal(book.id)}>
                         <p ><strong>Author: </strong> {book.author}</p>
                         <p><strong>Price: </strong> ${book.price}</p>
+                        <Modal
+                            title={book.title}
+                            footer={null}
+                            open={openModalId === book.id}
+                            onCancel={(e) => {
+                                e.stopPropagation(); // 阻止事件传播
+                                handleCancel();
+                            }}
+                        >
+                            <p>Some Introduction...</p>
+                            <p>Some Introduction...</p>
+                            <p>Some Introduction...</p>
+                        </Modal>
                         <Button
                             type="primary"
                             shape="round"
@@ -87,7 +114,7 @@ const List: React.FC = () => {
                                 <DeleteOutlined style={{ fontSize: '18px' }} />
                                 :
                                 <ShoppingCartOutlined style={{ fontSize: '18px' }} />}
-                            onClick={() => handleAddToCart(book)}
+                            onClick={(e) => {e.stopPropagation();handleAddToCart(book)}}
                             style={{
                                 backgroundColor: cart.includes(book.id) ? 'red' : 'green',
                                 position: 'absolute',
