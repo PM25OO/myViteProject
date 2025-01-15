@@ -2,28 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Avatar, List } from 'antd';
 
 
-
-const data = [
-  {
-    title: 'Ant Design Title 1'
-  },
-  {
-    title: 'Ant Design Title 2'
-  },
-  {
-    title: 'Ant Design Title 3'
-  },
-  {
-    title: 'Ant Design Title 4'
-  },
-  {
-    title: 'Ant Design Title 4'
-  },
-  {
-    title: 'Ant Design Title 4'
-  },
-];
-
 const Cart: React.FC = () => {
   type Book = { id: number, title: string, author: string, price: number };
   const [cart, setCart] = useState<Book[]>([]);
@@ -43,7 +21,7 @@ const Cart: React.FC = () => {
     };
 
     fetchCart();
-  }, []);
+  });
 
   return (
     <List

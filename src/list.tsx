@@ -20,10 +20,6 @@ const List: React.FC = () => {
         setOpenModalId(bookId);
     };
 
-    const handleOk = () => {
-        setOpenModalId(null);
-    };
-
     const handleCancel = () => {
         setOpenModalId(null);
     };
