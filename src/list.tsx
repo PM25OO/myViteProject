@@ -103,9 +103,7 @@ const List: React.FC = () => {
                                 handleCancel();
                             }}
                         >
-                            <p>Some Introduction...</p>
-                            <p>Some Introduction...</p>
-                            <p>Some Introduction...</p>
+                            <p><em><strong>Introduction...</strong></em></p>
                         </Modal>
                         <Button
                             type="primary"
@@ -114,7 +112,7 @@ const List: React.FC = () => {
                                 <DeleteOutlined style={{ fontSize: '18px' }} />
                                 :
                                 <ShoppingCartOutlined style={{ fontSize: '18px' }} />}
-                            onClick={(e) => {e.stopPropagation();handleAddToCart(book)}}
+                            onClick={(e) => { e.stopPropagation(); handleAddToCart(book) }}
                             style={{
                                 backgroundColor: cart.includes(book.id) ? 'red' : 'green',
                                 position: 'absolute',
